@@ -1,15 +1,15 @@
 package com.learn.withravi.service;
 
-import com.learn.withravi.entity.User;
+import com.learn.withravi.dto.UserDto;
 
 import java.util.List;
 
 public interface UserService {
 
-    User createUser(User user);
-    User getUserById(Long id);
-    List<User> getAllUser();
-    User updateUser(User user);
+    UserDto createUser(UserDto user);
+    UserDto getUserById(Long id);
+    List<UserDto> getAllUser();
+    UserDto updateUser(UserDto user);
     void deleteUser(Long id);
 
 }

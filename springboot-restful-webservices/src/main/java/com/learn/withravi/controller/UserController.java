@@ -1,6 +1,6 @@
 package com.learn.withravi.controller;
 
-import com.learn.withravi.entity.User;
+import com.learn.withravi.dto.UserDto;
 import com.learn.withravi.service.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -19,26 +19,26 @@ public class UserController {
 
 
     @PostMapping("/create")
-    public ResponseEntity<User> createUser(@RequestBody  User user) {
-            User savedUser = userService.createUser(user);
+    public ResponseEntity<UserDto> createUser(@RequestBody  UserDto user) {
+            UserDto savedUser = userService.createUser(user);
         return new ResponseEntity<>(savedUser, HttpStatus.CREATED);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<User> getUserById(@PathVariable("id") Long userId) {
-        User user = userService.getUserById(userId);
-        return new ResponseEntity<>(user, HttpStatus.OK);
+    public ResponseEntity<UserDto> getUserById(@PathVariable("id") Long userId) {
+        UserDto userDto = userService.getUserById(userId);
+        return new ResponseEntity<>(userDto, HttpStatus.OK);
     }
 
     @GetMapping("/all")
-    public ResponseEntity<List<User>> getAllUsers() {
-        List<User> users = userService.getAllUser();
+    public ResponseEntity<List<UserDto>> getAllUsers() {
+        List<UserDto> users = userService.getAllUser();
         return new ResponseEntity<>(users, HttpStatus.OK);
     }
 
     @PostMapping("/update")
-    public ResponseEntity<User> updateUser(@RequestBody User user){
-        User updatedUser = userService.updateUser(user);
+    public ResponseEntity<UserDto> updateUser(@RequestBody UserDto user){
+        UserDto updatedUser = userService.updateUser(user);
         return new ResponseEntity<>(updatedUser, HttpStatus.OK);
     }
 
