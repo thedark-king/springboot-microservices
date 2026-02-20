@@ -2,6 +2,8 @@ package com.learn.withravi.service;
 
 import com.learn.withravi.dto.UserDto;
 import com.learn.withravi.entity.User;
+import com.learn.withravi.exception.EmailAlreadyExistsException;
+import com.learn.withravi.exception.ResourceNotFoundException;
 import com.learn.withravi.mapper.AutoUserMapper;
 import com.learn.withravi.repository.UserRepository;
 import lombok.AllArgsConstructor;
@@ -25,6 +27,10 @@ public class UserServiceImpl implements UserService {
        //covert UserDto to User entity
 //        User newUser = UserMapper.mapToUser(user);
 //        User newUser = modelMapper.map(userDto, User.class);
+        Optional<User> optionalUser = userRepository.findByEmail(userDto.getEmail());
+        if(optionalUser.isPresent()){
+            throw new EmailAlreadyExistsException("Email already exists");
+        }
         User newUser = AutoUserMapper.MAPPER.maptoUser(userDto);
 
        User savedUser = userRepository.save(newUser);
@@ -37,11 +43,11 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto getUserById(Long id) {
-        Optional<User> optionalUser = userRepository.findById(id);
-        User user = optionalUser.get();
+        User user = userRepository.findById(id).orElseThrow(
+                ()-> new ResourceNotFoundException("User", "id", id));
 //       return UserMapper.mapToUserDto(user);
 //        return modelMapper.map(user,UserDto.class);
-        return AutoUserMapper.MAPPER.maptoUserDto(optionalUser.get());
+        return AutoUserMapper.MAPPER.maptoUserDto(user);
     }
 
     @Override
@@ -61,7 +67,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto updateUser(UserDto user) {
-        User existingUser = userRepository.findById(user.getId()).get();
+        User existingUser = userRepository.findById(user.getId()).orElseThrow(
+                () -> new ResourceNotFoundException("User", "id", user.getId()));
         existingUser.setFirstName(user.getFirstName());
         existingUser.setLastName(user.getLastName());
         existingUser.setEmail(user.getEmail());
@@ -73,6 +80,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void deleteUser(Long id) {
+        User existingUser = userRepository.findById(id).orElseThrow(
+                () -> new ResourceNotFoundException("User", "id", id));
         userRepository.deleteById(id);
     }
 
