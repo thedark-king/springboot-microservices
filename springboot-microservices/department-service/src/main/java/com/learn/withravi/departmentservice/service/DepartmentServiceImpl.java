@@ -2,6 +2,8 @@ package com.learn.withravi.departmentservice.service;
 
 import com.learn.withravi.departmentservice.dto.DepartmentDto;
 import com.learn.withravi.departmentservice.entity.Department;
+import com.learn.withravi.departmentservice.exception.ResourceNotFoundException;
+import com.learn.withravi.departmentservice.mapper.AutoDepartmentMapper;
 import com.learn.withravi.departmentservice.repository.DepartmentRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -15,33 +17,21 @@ public class DepartmentServiceImpl implements DepartmentService {
 
     public DepartmentDto saveDepartment(DepartmentDto departmentDto) {
         // Convert DepartmentDto to Department entity
-       Department  department = department = new Department(
-                departmentDto.getId(),
-                departmentDto.getDepartmentName(),
-                departmentDto.getDepartmentDescription(),
-                departmentDto.getDepartmentCode()
-        );
+       Department department = AutoDepartmentMapper.MAPPER.maptoDepartment(departmentDto);
 
        Department savedDepartment = departmentRepository.save(department);
 
        //convert saved Department entity back to DepartmentDto
-         DepartmentDto savedDepartmentDto = new DepartmentDto(
-                 savedDepartment.getId(),
-                 savedDepartment.getDepartmentName(),
-                    savedDepartment.getDepartmentDescription(),
-                    savedDepartment.getDepartmentCode()
-         );
+         DepartmentDto savedDepartmentDto = AutoDepartmentMapper.MAPPER.maptoDepartmentDto(savedDepartment);
         return savedDepartmentDto;
     }
     
     public DepartmentDto findByDepartmentCode(String departmentCode) {
         Department department =departmentRepository.findByDepartmentCode(departmentCode);
-        DepartmentDto departmentDto = new DepartmentDto(
-                department.getId(),
-                department.getDepartmentName(),
-                department.getDepartmentDescription(),
-                department.getDepartmentCode()
-        );
+        if(department == null){
+            throw new ResourceNotFoundException("Department", "departmentCode", departmentCode);
+        }
+        DepartmentDto departmentDto = AutoDepartmentMapper.MAPPER.maptoDepartmentDto(department);
         return departmentDto;
     }
 }

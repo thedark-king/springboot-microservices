@@ -1,5 +1,6 @@
 package com.learn.withravi.employee_service.controller;
 
+import com.learn.withravi.employee_service.dto.APIResponseDto;
 import com.learn.withravi.employee_service.dto.EmployeeDto;
 import com.learn.withravi.employee_service.service.EmployeeService;
 import org.springframework.http.HttpStatus;
@@ -23,9 +24,9 @@ public class EmployeeController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<EmployeeDto> getEmployeeById(@PathVariable("id") Long employeeId){
-        EmployeeDto employeeDto = employeeService.getEmployeeId(employeeId);
-        return new ResponseEntity<>(employeeDto, HttpStatus.OK);
+    public ResponseEntity<APIResponseDto> getEmployeeById(@PathVariable("id") Long employeeId){
+        APIResponseDto apiResponseDto = employeeService.getEmployeeId(employeeId);
+        return new ResponseEntity<>(apiResponseDto, HttpStatus.OK);
     }
 
 }
