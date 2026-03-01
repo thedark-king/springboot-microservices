@@ -1,5 +1,7 @@
 package com.learn.withravi.employee_service.mapper;
 
+import com.learn.withravi.employee_service.dto.APIResponseDto;
+import com.learn.withravi.employee_service.dto.DepartmentDto;
 import com.learn.withravi.employee_service.dto.EmployeeDto;
 import com.learn.withravi.employee_service.entity.Employee;
 import org.mapstruct.Mapper;
