@@ -1,8 +1,10 @@
-package com.learn.withravi.departmentservice.service;
+package com.learn.withravi.departmentservice.service.impl;
 
 import com.learn.withravi.departmentservice.dto.DepartmentDto;
 import com.learn.withravi.departmentservice.entity.Department;
+import com.learn.withravi.departmentservice.mapper.DepartmentMapper;
 import com.learn.withravi.departmentservice.repository.DepartmentRepository;
+import com.learn.withravi.departmentservice.service.DepartmentService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -15,33 +17,21 @@ public class DepartmentServiceImpl implements DepartmentService {
 
     public DepartmentDto saveDepartment(DepartmentDto departmentDto) {
         // Convert DepartmentDto to Department entity
-       Department  department = department = new Department(
-                departmentDto.getId(),
-                departmentDto.getDepartmentName(),
-                departmentDto.getDepartmentDescription(),
-                departmentDto.getDepartmentCode()
-        );
+       Department  department = department = DepartmentMapper.mapToDepartment(departmentDto);
 
        Department savedDepartment = departmentRepository.save(department);
 
        //convert saved Department entity back to DepartmentDto
-         DepartmentDto savedDepartmentDto = new DepartmentDto(
-                 savedDepartment.getId(),
-                 savedDepartment.getDepartmentName(),
-                    savedDepartment.getDepartmentDescription(),
-                    savedDepartment.getDepartmentCode()
-         );
+         DepartmentDto savedDepartmentDto = DepartmentMapper.mapToDepartmentDTO(savedDepartment);
+
         return savedDepartmentDto;
     }
     
     public DepartmentDto findByDepartmentCode(String departmentCode) {
         Department department =departmentRepository.findByDepartmentCode(departmentCode);
-        DepartmentDto departmentDto = new DepartmentDto(
-                department.getId(),
-                department.getDepartmentName(),
-                department.getDepartmentDescription(),
-                department.getDepartmentCode()
-        );
+
+        DepartmentDto departmentDto =  DepartmentMapper.mapToDepartmentDTO(department);
+
         return departmentDto;
     }
 }
