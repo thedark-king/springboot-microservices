@@ -1,0 +1,79 @@
+package com.learn.withravi.springboot.config;
+
+import org.springframework.amqp.core.*;
+import org.springframework.amqp.rabbit.connection.ConnectionFactory;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.amqp.support.converter.JacksonJsonMessageConverter;
+import org.springframework.amqp.support.converter.MessageConverter;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
+@Configuration
+public class RabbitMQConfig {
+
+    @Value("${rabbitmq.queue.name}")
+    private String queue;
+
+    @Value("${rabbitmq.exchange.name}")
+    private String exchange;
+
+    @Value("${rabbitmq.routing.key}")
+    private String routingKey;
+
+    @Value("${rabbitmq.routing.json.key}")
+    private String jsonRoutingKey;
+
+    @Value("${rabbitmq.queue.json.name}")
+    public String jsonQueue;
+
+    //    Spring bean for rabbitMQ queue
+    @Bean
+    public Queue queue(){
+        return new Queue(queue);
+    }
+
+    //Spring bean for rabbitMQ exchange
+    @Bean
+    public TopicExchange exchange(){
+        return new TopicExchange(exchange);
+    }
+    //binding between queue and exchange using routing key
+    @Bean
+    public Binding binding(){
+        return BindingBuilder.bind(queue()).to(exchange())
+                .with(routingKey);
+    }
+
+
+    //Spring bean to store json messages in a separate queue
+    @Bean
+    public Queue jsonQueue(){
+        return new Queue(jsonQueue);
+    }
+
+
+    //binding between json queue and exchange using routing key
+    @Bean
+    public Binding jsonBinding(){
+        return BindingBuilder.bind(jsonQueue()).to(exchange())
+                .with(jsonRoutingKey);
+    }
+
+    @Bean
+    public MessageConverter converter(){
+        return new JacksonJsonMessageConverter();
+    }
+
+    @Bean
+    public AmqpTemplate amqpTemplate(ConnectionFactory connectionFactory){
+        RabbitTemplate rabbitTemplate = new RabbitTemplate(connectionFactory);
+        rabbitTemplate.setMessageConverter(converter());
+        return rabbitTemplate;
+    }
+
+    //Connection factory
+    // RabbitTemplate beans
+    // RabbitAdmin beans
+    //Note: Spring Boot auto-configures them based on the properties provided in application.properties
+}
